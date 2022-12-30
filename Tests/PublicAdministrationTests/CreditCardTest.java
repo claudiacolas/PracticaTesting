@@ -11,50 +11,47 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class CreditCardTest {
 
+    private Nif nif;
+    private String cardNum;
+    private Date date;
+    private SmallCode svc;
     private CreditCard creditCard;
 
     @BeforeEach
     public void creditCardForTests () {
-        Nif nif = new Nif("47320966K");
-        Date date = new Date();
-        SmallCode code = new SmallCode("123");
-        this.creditCard = new CreditCard(nif, "cardNum", date, code);
+        this.nif = new Nif("47320966K");
+        this.cardNum = "cardNum";
+        this.date = new Date();
+        this.svc = new SmallCode("123");
+        this.creditCard = new CreditCard(nif, cardNum, date, svc);
     }
 
     @Test
     public void TestingNifGetter () {
-        String nif1 = creditCard.getNif();
-        String nif2 = "Nif{nif ciudadano='47320966K'}";
-        assertEquals(nif1,nif2);
+        assertEquals(this.nif.toString(), this.creditCard.getNif());
     }
 
     @Test
     public void TestingCardGetter () {
-        String card1 = creditCard.getCardNumb();
-        String card2 = "cardNum";
-        assertEquals(card1,card2);
+        assertEquals(this.cardNum, this.creditCard.getCardNumb());
     }
 
     @Test
     public void TestingDateGetter () {
-        String date1 = creditCard.getExpirDate();
-        String date2 = (new Date()).toString();
-        assertEquals(date1,date2);
+        assertEquals(this.date.toString(), this.creditCard.getExpirDate());
     }
 
     @Test
     public void TestingCodeGetter () {
-        String code1 = creditCard.getSmallCode();
-        String code2 = "123";
-        assertEquals(code1,code2);
+        assertEquals(this.svc.getSvc(), this.creditCard.getSmallCode());
     }
 
     @Test
     public void TestingToString () {
-        String cString = "CreditCard{" + "nif ciudadano='" + creditCard.getNif() + '\''
-                + "número tarjeta crédito'=" + creditCard.getCardNumb() + '\''
-                + "fecha de expiración tarjeta='" + creditCard.getExpirDate() + '\''
-                + "código de seguridad='" + creditCard.getSmallCode() + '\'' + '}';
+        String cString = "CreditCard{" + "nif ciudadano='" + this.nif + '\''
+                + "número tarjeta crédito'=" + this.cardNum + '\''
+                + "fecha de expiración tarjeta='" + this.date + '\''
+                + "código de seguridad='" + this.svc.getSvc() + '\'' + '}';
         assertEquals(creditCard.toString(), cString);
     }
 }

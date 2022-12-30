@@ -1,91 +1,54 @@
 package PublicAdministration;
 
-import Data.Nif;
-import java.util.Arrays;
-import java.util.Date;
-
+import Exceptions.InnocentPersonException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CrimConvictionsColl {
 
-    private final static int CRIMS = 10;
-
-    private Nif nif;
-    private CrimConviction[] crimConviction;
-
     // Represents the total criminal convictions registered for a citizen
-    // Its components, that is, the set of criminal convictions
 
-    public CrimConvictionsColl (Nif nif){
-        this.nif = nif;
-        this.crimConviction = new CrimConviction[CRIMS];
+    private final List<CrimConviction> criminalConvictions;
+
+    // Initializes the object
+    public CrimConvictionsColl (){
+        this.criminalConvictions = new ArrayList<>();
     }
 
-    // the getters
+    // The getters
 
-    public String getNif() {
-        return nif.toString();
+    public String getCriminalConvictions() throws InnocentPersonException {
+        for (CrimConviction criminalConviction : this.criminalConvictions) {
+            return criminalConviction.toString();
+        }
+        throw new InnocentPersonException();
     }
 
-    public CrimConviction[] getCrimConviction() {
-        return crimConviction;
-    }
+    // Adds a criminal conviction
 
     public void addCriminalConviction (CrimConviction crmC){
-        if (nextPosition(crimConviction) == -1) {
-            resize(crimConviction);
-            int addPosition = nextPosition(crimConviction);
-            crimConviction[addPosition] = crmC;
-
-        } else {
-            int addPosition = nextPosition(crimConviction);
-            crimConviction[addPosition] = crmC;
-        }
+        this.criminalConvictions.add(crmC);
     }
 
-    public CrimConviction getCriminalConviction (Date date) {
+    // Gets a specific criminal conviction by date
 
-        CrimConviction crimConvictionFound = null;
-        for (int i = 0; i < crimConviction.length; i++) {
-            if (crimConviction[i].getDate() == date.toString()) {
-                crimConvictionFound = crimConviction[i];
+    public CrimConviction getCriminalConviction (String date) throws InnocentPersonException {
+        for (CrimConviction cr : this.criminalConvictions) {
+            if (cr.getDate().equals(date)) {
+                return cr;
             }
         }
-        return crimConvictionFound;
-    } // Gets a specific criminal conviction by date
+        throw new InnocentPersonException();
+    }
+
+    // Converts to String
 
     public String toString () {
-        String crimConvictionCollList = null;
-        for (int i = 0; i < crimConviction.length; i++) {
-            crimConvictionCollList = "Ciudadano con nif = " + nif + "CrimConviction" + i+1
-                    + "{" + "fecha cometido = " + crimConviction[i].getDate()
-                    + "ofensa = " + crimConviction[i].getOffense()
-                    + "sentencia = " + crimConviction[i].getSentence() +'\n';
+        StringBuilder crBuilder = new StringBuilder();
+        for (CrimConviction cr : this.criminalConvictions) {
+            String crString = cr.toString();
+            crBuilder.append(crString);
         }
-        return crimConvictionCollList;
-    } // Converts to String
-
-    public void resize (CrimConviction[] crimConviction) {
-        int newlenght = crimConviction.length * 2;
-        CrimConviction[] crimConviction1 = new CrimConviction[newlenght];
-        for (int i= 0; i < crimConviction.length; i++) {
-            crimConviction1[i] = crimConviction[i];
-        }
-    }
-
-    public int size (CrimConviction[] crimConviction) {
-        return crimConviction.length;
-    }
-
-    public int nextPosition (CrimConviction[] crimConviction) {
-        int lastPosition = 0;
-        for (int i = 0; i < crimConviction.length; i++) {
-            if(crimConviction[i] != null) {
-                lastPosition += 1;
-            }
-        }
-        if (lastPosition == crimConviction.length) {
-            lastPosition = -1;
-        }
-        return lastPosition;
+        return criminalConvictions.toString();
     }
 }
