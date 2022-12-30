@@ -5,6 +5,7 @@ import PublicAdministration.*;
 import Services.*;
 import Exceptions.*;
 
+import java.io.IOException;
 import java.net.ConnectException;
 import java.util.Date;
 
@@ -13,97 +14,132 @@ public class UnifiedPlatform {
     //Cas d'ús a desenvolupar: SOL·LICITAR CERTIFICAT D'ANTECEDENTS PENALS
 
     //Variables
-    private JusticeMinistry justiceMinistry;
-    private CAS cas;
-    private CertificationAuthority certificationAuthority;
-    private GPD gpd;
 
-    private boolean registered = false; // citizen registered in Cl@ve PIN system
-
-    // Instances created during process
+    private Citizen citizen;
+    private byte authMethod;
+    private Nif nif;
+    private SmallCode pin;
     private Citizen persData;
     private Goal gl;
-    private CreditCard credC;
-    private CardPayment cPay;
-    private PDFDocument doc;
+    private CardPayment cardPayment;
+    private CertificationAuthority certificationAuthority;
+    private GPD gpd;
+    private JusticeMinistry justiceMinistry;
+    private CAS cas;
+    private String nTrans;
+    private DocPath path;
+    private DigitalSignature digSign;
+    private CriminalRecordCertf crc;
 
-    //Constructor
+    // Constructor
 
-    public UnifiedPlatform(){
-        this.justiceMinistry = null;
-        this.cas = null;
-        this.certificationAuthority = null;
-        this.gpd = null;
+    public UnifiedPlatform() {
+
     }
 
-    //Setters
+    // Setters
 
-    public void setJusticeMinistry(JusticeMinistry justiceMinistry) {
-        this.justiceMinistry = justiceMinistry;
+
+    // Mètodes a implementar
+
+    public void selectJusMin() {
+        System.out.print("MINISTRY OF JUSTICE PUBLIC ADMINISTRATION");
     }
 
-    public void setCas (CAS cas) {
-        this.cas = cas;
+    public void selectProcedures() {
+        System.out.print("MINISTRY OF JUSTICE PROCEDURES SECTION");
     }
 
-    public void setCertificationAuthority (CertificationAuthority certificationAuthority) {
-        this.certificationAuthority = certificationAuthority;
+    public void selectCriminalReportCertf() {
+        System.out.print("""
+                GETTING YOUR CRIMINAL RECORD CERTIFICATE
+                You must be identified. There are different options:
+                - Digital Certificate
+                - Cl@ve Permanente
+                - Cl@ve PIN""");
     }
 
-    public void setGpd (GPD gpd) {
-        this.gpd = gpd;
+    public void selectAuthMethod(byte opc) {
+        System.out.print("Cl@ve PIN authentication method. You must fill in the form");
+        this.authMethod = opc;
     }
 
-    //Mètodes a implementar
-
-    public void selectJusMin () { . . . };
-
-    public void selectProcedures () { . . . };
-
-    public void selectCriminalReportCertf () { . . . };
-
-    public void selectAuthMethod (byte opc) { . . . };
-
-    public void enterNIFandPINobt (Nif nif, Date valDate) throws
+    public void enterNIFandPINobt(Nif nif, Date valDate) throws
             NifNotRegisteredException, IncorrectValDateException,
             AnyMobileRegisteredException, ConnectException {
-
-    }
-
-    public void enterPIN (SmallCode pin) throws NotValidPINException,
-            ConnectException {
-        //certificationAuthority.sendPIN();
-        //certificationAuthority.checkPIN();
-    }
-
-    private void enterForm (Citizen citz, Goal goal)
-            throws IncompleteFormException, IncorrectVerificationException, ConnectException {
-        this.persData = citz;
-        this.gl = goal;
-        gpd.verifyData(persData, gl);
-    }
-
-    private void realizePayment () { . . . };
-
-    private void enterCardData (CreditCard cardD)
-            throws IncompleteFormException, NotValidPaymentDataException,
-            InsufficientBalanceException, ConnectException {
-        this.credC = cardD;
-        this.cPay = new CardPayment(new Nif(persData.getNif()), );
-        cas.askForApproval(credC);
-    }
-
-    private void obtainCertificate () throws BadPathException, DigitalSignatureException,
-            ConnectException {
-        try {
-            this.doc = new CriminalRecordCertf(persData.getNif(), persData.getName(), gl, );
-            this.doc.moveDoc("ruta/local/temporal");
-            this.doc.openDoc("visualización");
-        } catch {
-            throw new ProceduralException();
+        if (citizen.getNif() == null) {
+            throw new NifNotRegisteredException();
+        } else if (!certificationAuthority.sendPIN(nif, valDate)) {
+            throw new IncorrectValDateException();
+        } else if (citizen.getMobileNumb() == null) {
+            throw new AnyMobileRegisteredException();
+        } else {
+            this.nif = nif;
+            System.out.print("Now, you can introduce the PIN");
         }
     }
 
+    public void enterPIN(SmallCode pin) throws NotValidPINException,
+            ConnectException {
+        if (!certificationAuthority.checkPIN(this.nif, pin)) {
+            throw new NotValidPINException();
+        } else {
+            this.pin = pin;
+            System.out.print("VALID identification" + "/n" +
+                    "Now, we need you to fill in this GPD form to end the process");
+        }
+    }
+
+    private void enterForm(Citizen citz, Goal goal)
+            throws IncompleteFormException, IncorrectVerificationException, ConnectException {
+        if (citz == null || goal == null) {
+            throw new IncompleteFormException();
+        } else if (!gpd.verifyData(citz, goal)) {
+            throw new IncorrectVerificationException();
+        } else {
+            this.persData = citz;
+            this.gl = goal;
+            System.out.print("VALID identification" + "/n" +
+                    "The import is" + "/n" + cardPayment.getImport());
+        }
+    }
+
+    private void realizePayment() {
+        System.out.print("Now, you can introduce your Credit Card data:" + "/n" +
+                "Nif:" + "/n" +
+                "Card Number:" + "/n" +
+                "Expiration Date:" + "/n" +
+                "Small Code:");
+    }
+
+    private void enterCardData(CreditCard cardD)
+            throws IncompleteFormException, NotValidPaymentDataException,
+            InsufficientBalanceException, ConnectException {
+        if (cardD.getNif().isEmpty() || cardD.getCardNumb().isEmpty() || cardD.getExpirDate().isEmpty() || cardD.getSmallCode().isEmpty()) {
+            throw new IncompleteFormException();
+        } else if (!cas.askForApproval(nTrans, cardD, new Date(), this.cardPayment.getImport())) {
+            throw new NotValidPaymentDataException();
+        } else if (this.cardPayment.getImport().intValue() >= cardD.getBalance()) {
+            throw new InsufficientBalanceException();
+        } else {
+            System.out.print("OPERATION ACCEPTED. Below you can get your certificate");
+        }
+    }
+
+    private void obtainCertificate() throws BadPathException, DigitalSignatureException,
+            IOException {
+        if (!path.isOkayPath(path.getDocPath())){
+            throw new BadPathException();
+        } else if (digSign == null) {
+            throw new DigitalSignatureException();
+        } else {
+            this.crc = justiceMinistry.getCriminalRecordCertf(persData, gl);
+            PDFDocument pdf = new PDFDocument();
+            pdf.openDoc(path);
+        }
+    }
+}
+/*
     private void printDocument () { . . . } throws BadPathException, PrintingException;
 
     // The setter methods for injecting the dependences
@@ -119,3 +155,4 @@ public class UnifiedPlatform {
     private void printDocument (DocPath path) { . . . } throws BadPathException, PrintingException;
 
 }
+*/
