@@ -20,7 +20,7 @@ public class EnterPINTest {
     private SmallCode pin;
 
     @BeforeEach
-    public void initialize() {
+    public void setUp() {
         unifiedPlatform = new UnifiedPlatform();
         this.pin = new SmallCode("123");
     }

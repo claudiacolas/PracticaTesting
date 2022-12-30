@@ -26,7 +26,7 @@ public class EnterFormTest {
     private Nif nif;
 
     @BeforeEach
-    public void initialize() {
+    public void setUp() {
         unifiedPlatform = new UnifiedPlatform();
         this.nif = new Nif("12345678A");
         this.citizen = new Citizen(nif, "Montse", "address", "666666666");
