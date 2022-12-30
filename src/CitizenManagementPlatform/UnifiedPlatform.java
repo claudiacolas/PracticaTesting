@@ -33,12 +33,34 @@ public class UnifiedPlatform {
 
     // Constructor
 
-    public UnifiedPlatform() {
+    //Constructor
 
+    public UnifiedPlatform(){
+        this.justiceMinistry = null;
+        this.cas = null;
+        this.certificationAuthority = null;
+        this.gpd = null;
     }
 
-    // Setters
+    //Setters
 
+    public void setJusticeMinistry(JusticeMinistry justiceMinistry) {
+        this.justiceMinistry = justiceMinistry;
+    }
+
+    public void setCas (CAS cas) {
+        this.cas = cas;
+    }
+
+    public void setCertificationAuthority (CertificationAuthority certificationAuthority) {
+        this.certificationAuthority = certificationAuthority;
+    }
+
+    public void setGpd (GPD gpd) {
+        this.gpd = gpd;
+    }
+
+    public void setCardPayment (CardPayment cp) { this.cardPayment = cp; }
 
     // Mètodes a implementar
 
@@ -90,7 +112,7 @@ public class UnifiedPlatform {
         }
     }
 
-    private void enterForm(Citizen citz, Goal goal)
+    public void enterForm(Citizen citz, Goal goal)
             throws IncompleteFormException, IncorrectVerificationException, ConnectException {
         if (citz == null || goal == null) {
             throw new IncompleteFormException();
@@ -104,7 +126,7 @@ public class UnifiedPlatform {
         }
     }
 
-    private void realizePayment() {
+    public void realizePayment() {
         System.out.print("Now, you can introduce your Credit Card data:" + "/n" +
                 "Nif:" + "/n" +
                 "Card Number:" + "/n" +
@@ -112,10 +134,10 @@ public class UnifiedPlatform {
                 "Small Code:");
     }
 
-    private void enterCardData(CreditCard cardD)
+    public void enterCardData(CreditCard cardD)
             throws IncompleteFormException, NotValidPaymentDataException,
             InsufficientBalanceException, ConnectException {
-        if (cardD.getNif().isEmpty() || cardD.getCardNumb().isEmpty() || cardD.getExpirDate().isEmpty() || cardD.getSmallCode().isEmpty()) {
+        if (cardD == null) {
             throw new IncompleteFormException();
         } else if (!cas.askForApproval(nTrans, cardD, new Date(), this.cardPayment.getImport())) {
             throw new NotValidPaymentDataException();
@@ -126,7 +148,7 @@ public class UnifiedPlatform {
         }
     }
 
-    private void obtainCertificate() throws BadPathException, DigitalSignatureException,
+    public void obtainCertificate() throws BadPathException, DigitalSignatureException,
             IOException {
         if (!path.isOkayPath(path.getDocPath())){
             throw new BadPathException();
@@ -138,6 +160,12 @@ public class UnifiedPlatform {
             pdf.openDoc(path);
         }
     }
+
+    // Test methods
+
+    public String getPin() { return this.pin.toString(); }
+    public String getPersData() { return this.persData.toString(); }
+    public String getGoal() { return this.gl.toString(); }
 }
 /*
     private void printDocument () { . . . } throws BadPathException, PrintingException;
@@ -153,6 +181,8 @@ public class UnifiedPlatform {
     private void openDocument (DocPath path) { . . . } throws BadPathException;
 
     private void printDocument (DocPath path) { . . . } throws BadPathException, PrintingException;
+
+
 
 }
 */
