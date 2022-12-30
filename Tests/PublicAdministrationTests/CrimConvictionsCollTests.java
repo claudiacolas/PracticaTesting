@@ -1,7 +1,6 @@
 package PublicAdministrationTests;
 
-
-import Data.Nif;
+import Exceptions.InnocentPersonException;
 import PublicAdministration.CrimConviction;
 import PublicAdministration.CrimConvictionsColl;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,38 +9,32 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.util.Date;
 
 public class CrimConvictionsCollTests {
-    private Nif nif;
-    private CrimConvictionsColl crimConvictionsColl;
+
     private CrimConviction crimConviction;
+    private CrimConvictionsColl crimConvictionsColl;
+    private Date date;
 
     @BeforeEach
-    public void nifForTests () {
-        this.nif = new Nif("49261475Y");
+    public void setCrimConvictionsColl() {
+        this.crimConvictionsColl = new CrimConvictionsColl();
     }
 
     @BeforeEach
-    public void crimConvictionsCollforTest () {
-        this.crimConvictionsColl = new CrimConvictionsColl(this.nif);
-    }
-
-    @BeforeEach
-    public void crimConviction () {
-        this.crimConviction = new CrimConviction(new Date(), "agresión", "culpable");
+    public void setCrimConviction() {
+        this.date = new Date();
+        this.crimConviction = new CrimConviction(date, "offense", "sentece");
     }
 
     @Test
-    public void testingNifGetter () {
-        String nif = this.nif.toString();
-        assertEquals(nif,crimConvictionsColl.getNif());
-    }
-
-    @Test
-    public void addCrimConvictionTest () {
+    public void testingAdd() throws InnocentPersonException {
         crimConvictionsColl.addCriminalConviction(crimConviction);
-        assertEquals((this.crimConvictionsColl.getCrimConviction())[0],this.crimConviction);
+        assertEquals(this.crimConviction.toString(), crimConvictionsColl.getCriminalConvictions());
     }
 
-
-
+    @Test
+    public void testingGet() throws InnocentPersonException {
+        crimConvictionsColl.addCriminalConviction(crimConviction);
+        assertEquals(this.crimConviction.toString(), crimConvictionsColl.getCriminalConviction(date.toString()).toString());
+    }
 
 }

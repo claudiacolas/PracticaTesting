@@ -10,35 +10,34 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class CardPaymentTest {
 
+    private String reference;
+    private Nif nif;
+    private BigDecimal imp;
+    private Date date;
     private CardPayment cardPayment;
 
     @BeforeEach
     public void cardPaymentForTests() {
-        Nif nif = new Nif("47320966K");
-        BigDecimal imp = new BigDecimal("56.89");
-        String ref = "123";
-        this.cardPayment = new CardPayment(nif, imp, ref);
+        this.reference = "123";
+        this.nif = new Nif("47320966K");
+        this.imp = new BigDecimal("56.89");
+        this.date = new Date();
+        this.cardPayment = new CardPayment(reference, nif, date, imp);
     }
 
     @Test
     public void TestingNifGetter () {
-        String nif1 = cardPayment.getNif();
-        String nif2 = "Nif{nif ciudadano='47320966K'}";
-        assertEquals(nif1,nif2);
+        assertEquals(this.nif.toString(), this.cardPayment.getNif());
     }
 
     @Test
     public void TestingImpGetter () {
-        String imp1 = cardPayment.getImport();
-        String imp2 = "56.89";
-        assertEquals(imp1,imp2);
+        assertEquals(this.imp.toString(), this.cardPayment.getImport());
     }
 
     @Test
     public void TestingDateGetter () {
-        String date1 = cardPayment.getDate();
-        String date2 = (new Date()).toString();
-        assertEquals(date1,date2);
+        assertEquals(this.date.toString(), this.cardPayment.getDate());
     }
 
     @Test
@@ -50,10 +49,10 @@ public class CardPaymentTest {
 
     @Test
     public void TestingToString () {
-        String cString = "CardPayment{" + "código operación=" + cardPayment.getReference() + '\''
-                + "nif ciudadano'=" + cardPayment.getNif() + '\''
-                + "fecha'=" + cardPayment.getDate() + '\''
-                + "importe del pago='" + cardPayment.getImport() + '\'' + '}';
+        String cString = "CardPayment{" + "código operación=" + this.reference + '\''
+                + "nif ciudadano'=" + this.nif + '\''
+                + "fecha'=" + this.date + '\''
+                + "importe del pago='" + this.imp + '\'' + '}';
         assertEquals(cardPayment.toString(), cString);
     }
 }

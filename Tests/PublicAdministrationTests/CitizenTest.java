@@ -7,55 +7,49 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class CitizenTest {
-    private Citizen citizen;
+
     private Nif nif;
+    private String name;
+    private String address;
+    private String mobile;
+    private Citizen citizen;
 
-
-    @BeforeEach
-    public void nifForTest () {
-        this.nif = new Nif("47320966K");
-    }
 
     @BeforeEach
     public void citizenforTests () {
-        this.citizen = new Citizen(new Nif("47320966K"), "nombre", "dirección", "665879012");
-
+        this.nif = new Nif("47320966K");
+        this.name = "name";
+        this.address = "address";
+        this.mobile = "665879012";
+        this.citizen = new Citizen(nif, name, address, mobile);
     }
 
     @Test
     public void TestingToString () {
         String cString = "Ciudadano{" + "nif ciudadano='" + this.nif + '\n'
-                + "nombre ciudadano='" + "nombre" + '\n'
-                + "dirección ciudadano='" + "dirección" + '\n'
-                + "teléfono ciudadano='" + "665879012" + '\n' + '}';
+                + "nombre ciudadano='" + this.name + '\n'
+                + "dirección ciudadano='" + this.address + '\n'
+                + "teléfono ciudadano='" + this.mobile + '\n' + '}';
         assertEquals(citizen.toString(), cString);
     }
 
     @Test
     public void TestingBifGetters () {
-        String nif = citizen.getNif();
-        String nif1 = "Nif{nif ciudadano='47320966K'}";
-        assertEquals(nif,nif1 );
+        assertEquals(this.nif.toString(), this.citizen.getNif());
     }
 
     @Test
     public void TestingNameGetter () {
-        String name = citizen.getName();
-        String name1 = "nombre";
-        assertEquals(name,name1 );
+        assertEquals(this.name, this.citizen.getName());
     }
 
     @Test
     public void TestingAdressGetter () {
-        String adress = citizen.getAddress();
-        String adress1 = "dirección";
-        assertEquals(adress,adress1 );
+        assertEquals(this.address, this.citizen.getAddress());
     }
 
     @Test
     public void TestingMobileGetter () {
-        String mobile = citizen.getMobileNumb();
-        String mobile1 = "665879012";
-        assertEquals(mobile,mobile1);
+        assertEquals(this.mobile ,this.citizen.getMobileNumb());
     }
 }

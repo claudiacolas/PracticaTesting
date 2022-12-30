@@ -15,7 +15,7 @@ public class CardPayment {
 
     // Constructor: initializes attributes
 
-    public CardPayment (Nif nif, BigDecimal imp, String ref) {
+    public CardPayment (String ref, Nif nif, Date date, BigDecimal imp) {
         this.reference = ref;
         this.nif = nif;
         this.date = new Date();
