@@ -27,7 +27,7 @@ public class CardPayment {
     public String getReference() { return reference; }
     public String getNif() { return nif.toString(); }
     public String getDate() { return date.toString(); }
-    public String getImport() { return imp.toString(); }
+    public BigDecimal getImport() { return imp; }
 
     // Converts to String
 

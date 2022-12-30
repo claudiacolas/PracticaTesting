@@ -12,14 +12,16 @@ public class CreditCard {
     private final String cardNumb; // The number of the credit card
     private final Date expirDate; // The expiration date for the credit card
     private final SmallCode svc; // The Safe Verification Code
+    private final int balance;
 
     // Constructor
 
-    public CreditCard (Nif nif, String cNum, Date d, SmallCode c) { // Initializes attributes
+    public CreditCard (Nif nif, String cNum, Date d, SmallCode c, int balance) { // Initializes attributes
         this.nif = nif;
         this.cardNumb = cNum;
         this.expirDate = d;
         this.svc = c;
+        this.balance = balance;
     }
 
     // Getters
@@ -28,6 +30,7 @@ public class CreditCard {
     public String getCardNumb() { return cardNumb; }
     public String getExpirDate() { return expirDate.toString(); }
     public String getSmallCode() { return svc.getSvc(); }
+    public int getBalance() { return balance; }
 
     // Converts to String
 

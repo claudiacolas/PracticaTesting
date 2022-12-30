@@ -32,8 +32,8 @@ public class DocPathTest {
 
     @Test
     public void TestingEquals () {
-        DocPath dp1 = new DocPath ("/Users/claudia");
-        DocPath dp2 = new DocPath ("/Users/claudia");
+        DocPath dp1 = new DocPath ("/Users");
+        DocPath dp2 = new DocPath ("/Users");
         assertTrue(dp1.equals(dp2));
     }
 }

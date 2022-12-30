@@ -32,7 +32,7 @@ public class CardPaymentTest {
 
     @Test
     public void TestingImpGetter () {
-        assertEquals(this.imp.toString(), this.cardPayment.getImport());
+        assertEquals(this.imp, this.cardPayment.getImport());
     }
 
     @Test

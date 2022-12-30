@@ -16,6 +16,7 @@ public class CreditCardTest {
     private Date date;
     private SmallCode svc;
     private CreditCard creditCard;
+    private int balance;
 
     @BeforeEach
     public void creditCardForTests () {
@@ -23,7 +24,8 @@ public class CreditCardTest {
         this.cardNum = "cardNum";
         this.date = new Date();
         this.svc = new SmallCode("123");
-        this.creditCard = new CreditCard(nif, cardNum, date, svc);
+        this.balance = 5000;
+        this.creditCard = new CreditCard(nif, cardNum, date, svc, balance);
     }
 
     @Test
@@ -44,6 +46,11 @@ public class CreditCardTest {
     @Test
     public void TestingCodeGetter () {
         assertEquals(this.svc.getSvc(), this.creditCard.getSmallCode());
+    }
+
+    @Test
+    public void TestingBalanceGetter () {
+        assertEquals(this.balance, this.creditCard.getBalance());
     }
 
     @Test

@@ -17,7 +17,7 @@ public class PDFDocument {
     // Constructor: initializes attributes and emulates the document download at a default path
 
     public PDFDocument () {
-        String actpath = new File(".").getAbsolutePath();
+        this.actpath = new File(".").getAbsolutePath();
         this.createDate = new Date();
         this.path = new DocPath(actpath);
         this.file = new File(path.getDocPath());
