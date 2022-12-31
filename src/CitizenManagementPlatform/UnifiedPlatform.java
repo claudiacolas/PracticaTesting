@@ -5,6 +5,8 @@ import PublicAdministration.*;
 import Services.*;
 import Exceptions.*;
 
+import java.awt.*;
+import java.io.File;
 import java.io.IOException;
 import java.net.ConnectException;
 import java.util.Date;
@@ -15,8 +17,6 @@ public class UnifiedPlatform {
 
     //Variables
 
-    private Citizen citizen;
-    private byte authMethod;
     private Nif nif;
     private SmallCode pin;
     private Citizen persData;
@@ -29,7 +29,7 @@ public class UnifiedPlatform {
     private String nTrans;
     private DocPath path;
     private DigitalSignature digSign;
-    private CriminalRecordCertf crc;
+    private final boolean doPrint = false;
 
     // Constructor
 
@@ -83,17 +83,16 @@ public class UnifiedPlatform {
 
     public void selectAuthMethod(byte opc) {
         System.out.print("Cl@ve PIN authentication method. You must fill in the form");
-        this.authMethod = opc;
     }
 
     public void enterNIFandPINobt(Nif nif, Date valDate) throws
             NifNotRegisteredException, IncorrectValDateException,
             AnyMobileRegisteredException, ConnectException {
-        if (citizen.getNif() == null) {
+        if (persData.getNif() == null) {
             throw new NifNotRegisteredException();
         } else if (!certificationAuthority.sendPIN(nif, valDate)) {
             throw new IncorrectValDateException();
-        } else if (citizen.getMobileNumb() == null) {
+        } else if (persData.getMobileNumb() == null) {
             throw new AnyMobileRegisteredException();
         } else {
             this.nif = nif;
@@ -155,34 +154,53 @@ public class UnifiedPlatform {
         } else if (digSign == null) {
             throw new DigitalSignatureException();
         } else {
-            this.crc = justiceMinistry.getCriminalRecordCertf(persData, gl);
+            CriminalRecordCertf crc = justiceMinistry.getCriminalRecordCertf(persData, gl);
             PDFDocument pdf = new PDFDocument();
             pdf.openDoc(path);
         }
     }
 
+    private void printDocument () throws BadPathException, PrintingException {
+
+        if (!path.isOkayPath(path.getDocPath())) {
+            throw new BadPathException();
+        }
+
+        try {
+            printDocument(path);
+            System.out.print("Your Criminal Record Certificate is being printed now");
+        } catch (Exception e) {
+            throw new PrintingException();
+        }
+
+    }
+
     // Test methods
 
     public String getPin() { return this.pin.toString(); }
+
     public String getPersData() { return this.persData.toString(); }
+
     public String getGoal() { return this.gl.toString(); }
-}
-/*
-    private void printDocument () { . . . } throws BadPathException, PrintingException;
-
-    // The setter methods for injecting the dependences
-
-    // Other input events (not required)
 
     // Other internal operations (not required)
 
-    private void registerPayment () { . . . };
+    private void registerPayment () {
+        boolean payDone = true;
+    }
 
-    private void openDocument (DocPath path) { . . . } throws BadPathException;
+    private void openDocument (DocPath path) throws BadPathException, IOException {
+        if (!path.isOkayPath(path.getDocPath())) {
+            throw new BadPathException();
+        } else {
+            PDFDocument pdf = new PDFDocument();
+            pdf.openDoc(path);
+        }
+    }
 
-    private void printDocument (DocPath path) { . . . } throws BadPathException, PrintingException;
-
-
-
+    private void printDocument (DocPath path) throws BadPathException, PrintingException, IOException {
+        File fileToPrint = new File(path.getDocPath());
+        Desktop.getDesktop().print(fileToPrint);
+    }
 }
-*/
+
