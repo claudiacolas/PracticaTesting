@@ -8,7 +8,7 @@ public class DigitalSignatureTest {
 
     @Test
     public void TestingConstructorNull () {
-        Exception exception = assertThrows( IllegalArgumentException.class, () -> {
+        Exception exception = assertThrows( NullPointerException.class, () -> {
             DigitalSignature digitalSignature = new DigitalSignature(null);
         });
 

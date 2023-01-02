@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class NifTest {
     @Test
     public void TestingConstructorNull () {
-        Exception exception = assertThrows( IllegalArgumentException.class, () -> {
+        Exception exception = assertThrows( NullPointerException.class, () -> {
             Nif nif = new Nif (null);
         });
 

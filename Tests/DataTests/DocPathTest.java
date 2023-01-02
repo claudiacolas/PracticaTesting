@@ -8,7 +8,7 @@ public class DocPathTest {
 
     @Test
     public void TestingConstructorNull () {
-        Exception exception = assertThrows( IllegalArgumentException.class, () -> {
+        Exception exception = assertThrows( NullPointerException.class, () -> {
             DocPath docPath = new DocPath(null);
         });
 
