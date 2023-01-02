@@ -32,10 +32,11 @@ public class EnterFormTest {
         this.citizen = new Citizen(nif, "Montse", "address", "666666666");
         this.cardPayment = new CardPayment("123", nif, new Date(), new BigDecimal("56.89"));
         this.goal = Goal.PUBLICWORKERS;
+        unifiedPlatform.setPreviousStepConfirmed(true);
     }
 
     @Test
-    public void testingFormEnteredSuccess() throws IncompleteFormException, IncorrectVerificationException, ConnectException {
+    public void testingFormEnteredSuccess() throws IncompleteFormException, IncorrectVerificationException, ConnectException, ProceduralException {
         unifiedPlatform.setGpd(new GPDDouble());
         unifiedPlatform.setCardPayment(cardPayment);
         unifiedPlatform.enterForm(citizen, goal);

@@ -1,7 +1,7 @@
 package Exceptions;
 
 public class ProceduralException extends Exception{
-    public ProceduralException(String message) {
-        super(message);
+    public ProceduralException() {
+        super("El paso anterior no se ha completado con éxito.");
     }
 }

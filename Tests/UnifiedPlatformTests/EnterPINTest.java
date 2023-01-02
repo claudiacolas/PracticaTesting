@@ -2,6 +2,7 @@ package UnifiedPlatformTests;
 
 import Data.*;
 import Exceptions.NotValidPINException;
+import Exceptions.ProceduralException;
 import Services.CertificationAuthority;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,10 +24,11 @@ public class EnterPINTest {
     public void setUp() {
         unifiedPlatform = new UnifiedPlatform();
         this.pin = new SmallCode("123");
+        unifiedPlatform.setPreviousStepConfirmed(true);
     }
 
     @Test
-    public void testingPinEnteredSuccess() throws NotValidPINException, ConnectException {
+    public void testingPinEnteredSuccess() throws NotValidPINException, ConnectException, ProceduralException {
         unifiedPlatform.setCertificationAuthority(new CertificationAuthorityDouble());
         unifiedPlatform.enterPIN(pin);
         assertEquals(this.pin.toString(), unifiedPlatform.getPin());
@@ -39,6 +41,15 @@ public class EnterPINTest {
         String expectedMessage = "El PIN introducido no es incorrecto.";
         String actualMessage = exception.getMessage();
 
+        assertTrue(actualMessage.contains(expectedMessage));
+    }
+
+    @Test
+    public void testingPreviousStepConfirmed () {
+        unifiedPlatform.setPreviousStepConfirmed(false);
+        Exception exception = assertThrows(ProceduralException.class, () -> { unifiedPlatform.enterPIN(pin); });
+        String expectedMessage = "El paso anterior no se ha completado con éxito.";
+        String actualMessage = exception.getMessage();
         assertTrue(actualMessage.contains(expectedMessage));
     }
 

@@ -27,6 +27,7 @@ public class EnterCardDataTest {
     private CreditCard credC;
     private Nif nif;
     private CardPayment cardPayment;
+    private BigDecimal imp;
     private final PrintStream standardOut = System.out;
     private final ByteArrayOutputStream outputStreamCaptor = new ByteArrayOutputStream();
 
@@ -35,14 +36,16 @@ public class EnterCardDataTest {
         unifiedPlatform = new UnifiedPlatform();
         this.nif = new Nif("12345678A");
         this.credC = new CreditCard(nif, "123", new Date(), new SmallCode("333"), 3000);
-        this.cardPayment = new CardPayment("123", nif, new Date(), new BigDecimal("56.89"));
+        this.cardPayment = new CardPayment("123", nif, new Date(), this.imp);
         System.setOut(new PrintStream(outputStreamCaptor));
+        unifiedPlatform.setPreviousStepConfirmed(true);
     }
 
     @Test
-    public void testingCardDataSuccess() throws NotValidPaymentDataException, IncompleteFormException, InsufficientBalanceException, ConnectException {
+    public void testingCardDataSuccess() throws NotValidPaymentDataException, IncompleteFormException, InsufficientBalanceException, ConnectException, ProceduralException {
         unifiedPlatform.setCas(new CASDouble());
         unifiedPlatform.setCardPayment(cardPayment);
+        unifiedPlatform.setImport(new BigDecimal(3.86));
         unifiedPlatform.enterCardData(credC);
         assertEquals("OPERATION ACCEPTED. Below you can get your certificate", outputStreamCaptor.toString()
                 .trim());
@@ -72,7 +75,9 @@ public class EnterCardDataTest {
     @Test
     public void testingInsufficientBalanceException() {
         unifiedPlatform.setCas(new CASDouble());
-        unifiedPlatform.setCardPayment(new CardPayment("ref", nif, new Date(), new BigDecimal(5000)));
+        unifiedPlatform.setImport(new BigDecimal(3.86));
+        this.credC = new CreditCard(nif, "123", new Date(), new SmallCode("333"), 2);
+        unifiedPlatform.setCardPayment(new CardPayment("ref", nif, new Date(), this.imp));
         Exception exception = assertThrows(InsufficientBalanceException.class, () -> {
             unifiedPlatform.enterCardData(credC); });
         String expectedMessage = "Balance insuficente.";

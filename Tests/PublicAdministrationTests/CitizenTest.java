@@ -34,8 +34,8 @@ public class CitizenTest {
     }
 
     @Test
-    public void TestingBifGetters () {
-        assertEquals(this.nif.toString(), this.citizen.getNif());
+    public void TestingNifGetters () {
+        assertEquals(this.nif.getNif(), this.citizen.getNif());
     }
 
     @Test
