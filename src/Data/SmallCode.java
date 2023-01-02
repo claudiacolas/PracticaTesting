@@ -9,7 +9,7 @@ public class SmallCode {
     public SmallCode (String code) {
 
         if(code == null || code.trim().isEmpty()) {
-            throw new IllegalArgumentException("No se ha introducido ningún código.");
+            throw new NullPointerException("No se ha introducido ningún código.");
         } else if (!isOkaySvc(code)) {
             throw new IllegalArgumentException("No se ha introducido el código correctamente.");
         }

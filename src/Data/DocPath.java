@@ -1,6 +1,7 @@
 package Data;
 
 import java.io.File;
+import java.util.NoSuchElementException;
 
 public class DocPath {
 
@@ -11,7 +12,7 @@ public class DocPath {
     public DocPath (String docPath) {
 
         if(docPath == null || docPath.trim().isEmpty()) {
-            throw new IllegalArgumentException("No se ha introducido ninguna ruta.");
+            throw new NullPointerException("No se ha introducido ninguna ruta.");
         } else if (!isOkayPath(docPath)) {
             throw new IllegalArgumentException("No se ha introducido la ruta correctamente.");
         }

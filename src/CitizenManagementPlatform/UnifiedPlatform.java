@@ -61,6 +61,8 @@ public class UnifiedPlatform {
     }
 
     public void setCardPayment (CardPayment cp) { this.cardPayment = cp; }
+    public void setPath (DocPath path) {this.path = path;}
+    public void setDigSign (DigitalSignature digSign) {this.digSign = digSign; }
 
     // Mètodes a implementar
 
@@ -166,6 +168,8 @@ public class UnifiedPlatform {
     public String getPin() { return this.pin.toString(); }
     public String getPersData() { return this.persData.toString(); }
     public String getGoal() { return this.gl.toString(); }
+    public String getPath() { return this.path.toString(); }
+    public String getcrc() { return this.crc.toString();}
 }
 /*
     private void printDocument () { . . . } throws BadPathException, PrintingException;
