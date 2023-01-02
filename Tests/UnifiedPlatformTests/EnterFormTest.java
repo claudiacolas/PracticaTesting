@@ -32,6 +32,7 @@ public class EnterFormTest {
         this.citizen = new Citizen(nif, "Montse", "address", "666666666");
         this.cardPayment = new CardPayment("123", nif, new Date(), new BigDecimal("56.89"));
         this.goal = Goal.PUBLICWORKERS;
+        unifiedPlatform.setPreviousStepConfirmed(true);
     }
 
     @Test

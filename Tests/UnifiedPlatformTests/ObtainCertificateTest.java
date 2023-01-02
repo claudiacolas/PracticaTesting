@@ -28,7 +28,7 @@ public class ObtainCertificateTest {
         this.nif = new Nif("12345678A");
         this.persData = new Citizen(nif, "Montse", "address", "666666666");
         this.goal = Goal.PUBLICWORKERS;
-        this.path = new DocPath("./");
+        unifiedPlatform.setPreviousStepConfirmed(true);
     }
 
     @Test
@@ -36,7 +36,6 @@ public class ObtainCertificateTest {
         unifiedPlatform.setJusticeMinistry(new JusticeMinistryDouble());
         unifiedPlatform.setPersData(persData);
         unifiedPlatform.setGoal(goal);
-        unifiedPlatform.setPath(path);
         unifiedPlatform.obtainCertificate();
     }
 

@@ -38,6 +38,7 @@ public class EnterCardDataTest {
         this.credC = new CreditCard(nif, "123", new Date(), new SmallCode("333"), 3000);
         this.cardPayment = new CardPayment("123", nif, new Date(), this.imp);
         System.setOut(new PrintStream(outputStreamCaptor));
+        unifiedPlatform.setPreviousStepConfirmed(true);
     }
 
     @Test

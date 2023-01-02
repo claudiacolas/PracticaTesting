@@ -189,7 +189,7 @@ public class UnifiedPlatform {
 
     private void isPreviousStepConfirmed() throws ProceduralException {
         if (!previousStepConfirmed) {
-            throw new ProceduralException("El paso anterior no se ha completado con éxito.");
+            throw new ProceduralException();
         }
         previousStepConfirmed = false;
     }
@@ -211,6 +211,8 @@ public class UnifiedPlatform {
     public void setGoal (Goal goal) { this.gl = goal;}
 
     public void setPath (DocPath path) { this.path = path; }
+
+    public void setPreviousStepConfirmed (boolean b) { this.previousStepConfirmed = b; }
 
 }
 

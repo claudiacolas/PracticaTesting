@@ -24,6 +24,7 @@ public class EnterPINTest {
     public void setUp() {
         unifiedPlatform = new UnifiedPlatform();
         this.pin = new SmallCode("123");
+        unifiedPlatform.setPreviousStepConfirmed(true);
     }
 
     @Test
@@ -40,6 +41,15 @@ public class EnterPINTest {
         String expectedMessage = "El PIN introducido no es incorrecto.";
         String actualMessage = exception.getMessage();
 
+        assertTrue(actualMessage.contains(expectedMessage));
+    }
+
+    @Test
+    public void testingPreviousStepConfirmed () {
+        unifiedPlatform.setPreviousStepConfirmed(false);
+        Exception exception = assertThrows(ProceduralException.class, () -> { unifiedPlatform.enterPIN(pin); });
+        String expectedMessage = "El paso anterior no se ha completado con éxito.";
+        String actualMessage = exception.getMessage();
         assertTrue(actualMessage.contains(expectedMessage));
     }
 
