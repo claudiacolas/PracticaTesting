@@ -2,6 +2,7 @@ package UnifiedPlatformTests;
 
 import Data.*;
 import Exceptions.NotValidPINException;
+import Exceptions.ProceduralException;
 import Services.CertificationAuthority;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,7 +27,7 @@ public class EnterPINTest {
     }
 
     @Test
-    public void testingPinEnteredSuccess() throws NotValidPINException, ConnectException {
+    public void testingPinEnteredSuccess() throws NotValidPINException, ConnectException, ProceduralException {
         unifiedPlatform.setCertificationAuthority(new CertificationAuthorityDouble());
         unifiedPlatform.enterPIN(pin);
         assertEquals(this.pin.toString(), unifiedPlatform.getPin());

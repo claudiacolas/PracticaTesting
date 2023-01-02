@@ -22,7 +22,7 @@ public class Citizen {
 
     // The getters
 
-    public String getNif() { return nif.toString(); }
+    public String getNif() { return nif.getNif(); }
     public String getName() { return name; }
     public String getAddress() { return address; }
     public String getMobileNumb() { return mobileNumb; }

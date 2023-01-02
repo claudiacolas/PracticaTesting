@@ -35,7 +35,7 @@ public class EnterFormTest {
     }
 
     @Test
-    public void testingFormEnteredSuccess() throws IncompleteFormException, IncorrectVerificationException, ConnectException {
+    public void testingFormEnteredSuccess() throws IncompleteFormException, IncorrectVerificationException, ConnectException, ProceduralException {
         unifiedPlatform.setGpd(new GPDDouble());
         unifiedPlatform.setCardPayment(cardPayment);
         unifiedPlatform.enterForm(citizen, goal);

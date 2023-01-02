@@ -5,9 +5,8 @@ import PublicAdministration.*;
 import Services.*;
 import Exceptions.*;
 
-import java.awt.*;
-import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.net.ConnectException;
 import java.util.Date;
 
@@ -29,9 +28,10 @@ public class UnifiedPlatform {
     private String nTrans;
     private DocPath path;
     private DigitalSignature digSign;
-    private final boolean doPrint = false;
-
-    // Constructor
+    private CreditCard creditCard;
+    private BigDecimal imp;
+    private CriminalRecordCertf crc;
+    private boolean previousStepConfirmed = false;
 
     //Constructor
 
@@ -60,34 +60,41 @@ public class UnifiedPlatform {
         this.gpd = gpd;
     }
 
-    public void setCardPayment (CardPayment cp) { this.cardPayment = cp; }
-
     // Mètodes a implementar
 
     public void selectJusMin() {
         System.out.print("MINISTRY OF JUSTICE PUBLIC ADMINISTRATION");
+        this.previousStepConfirmed = true;
     }
 
-    public void selectProcedures() {
+    public void selectProcedures() throws ProceduralException {
+        isPreviousStepConfirmed();
         System.out.print("MINISTRY OF JUSTICE PROCEDURES SECTION");
+        this.previousStepConfirmed = true;
+
     }
 
-    public void selectCriminalReportCertf() {
+    public void selectCriminalReportCertf() throws ProceduralException {
+        isPreviousStepConfirmed();
         System.out.print("""
                 GETTING YOUR CRIMINAL RECORD CERTIFICATE
                 You must be identified. There are different options:
                 - Digital Certificate
                 - Cl@ve Permanente
                 - Cl@ve PIN""");
+        this.previousStepConfirmed = true;
     }
 
-    public void selectAuthMethod(byte opc) {
+    public void selectAuthMethod(byte opc) throws ProceduralException {
+        isPreviousStepConfirmed();
         System.out.print("Cl@ve PIN authentication method. You must fill in the form");
+        this.previousStepConfirmed = true;
     }
 
     public void enterNIFandPINobt(Nif nif, Date valDate) throws
             NifNotRegisteredException, IncorrectValDateException,
-            AnyMobileRegisteredException, ConnectException {
+            AnyMobileRegisteredException, ConnectException, ProceduralException {
+        isPreviousStepConfirmed();
         if (persData.getNif() == null) {
             throw new NifNotRegisteredException();
         } else if (!certificationAuthority.sendPIN(nif, valDate)) {
@@ -98,10 +105,12 @@ public class UnifiedPlatform {
             this.nif = nif;
             System.out.print("Now, you can introduce the PIN");
         }
+        this.previousStepConfirmed = true;
     }
 
     public void enterPIN(SmallCode pin) throws NotValidPINException,
-            ConnectException {
+            ConnectException, ProceduralException {
+        isPreviousStepConfirmed();
         if (!certificationAuthority.checkPIN(this.nif, pin)) {
             throw new NotValidPINException();
         } else {
@@ -109,10 +118,12 @@ public class UnifiedPlatform {
             System.out.print("VALID identification" + "/n" +
                     "Now, we need you to fill in this GPD form to end the process");
         }
+        this.previousStepConfirmed = true;
     }
 
     public void enterForm(Citizen citz, Goal goal)
-            throws IncompleteFormException, IncorrectVerificationException, ConnectException {
+            throws IncompleteFormException, IncorrectVerificationException, ConnectException, ProceduralException {
+        isPreviousStepConfirmed();
         if (citz == null || goal == null) {
             throw new IncompleteFormException();
         } else if (!gpd.verifyData(citz, goal)) {
@@ -121,58 +132,66 @@ public class UnifiedPlatform {
             this.persData = citz;
             this.gl = goal;
             System.out.print("VALID identification" + "/n" +
-                    "The import is" + "/n" + cardPayment.getImport());
+                    "The import is" + this.imp + "/n" + cardPayment.getImport());
         }
+        this.previousStepConfirmed = true;
     }
 
-    public void realizePayment() {
+    public void realizePayment() throws ProceduralException {
+        isPreviousStepConfirmed();
         System.out.print("Now, you can introduce your Credit Card data:" + "/n" +
                 "Nif:" + "/n" +
                 "Card Number:" + "/n" +
                 "Expiration Date:" + "/n" +
                 "Small Code:");
+        this.previousStepConfirmed = true;
     }
 
     public void enterCardData(CreditCard cardD)
             throws IncompleteFormException, NotValidPaymentDataException,
-            InsufficientBalanceException, ConnectException {
+            InsufficientBalanceException, ConnectException, ProceduralException {
+        isPreviousStepConfirmed();
         if (cardD == null) {
             throw new IncompleteFormException();
-        } else if (!cas.askForApproval(nTrans, cardD, new Date(), this.cardPayment.getImport())) {
+        } else if (!cas.askForApproval(nTrans, cardD, new Date(), this.imp)) {
             throw new NotValidPaymentDataException();
-        } else if (this.cardPayment.getImport().intValue() >= cardD.getBalance()) {
+        } else if (this.imp.intValue() > cardD.getBalance()) {
             throw new InsufficientBalanceException();
         } else {
+            this.creditCard = cardD;
+            this.cardPayment = new CardPayment(nTrans, this.nif, new Date(), this.imp);
             System.out.print("OPERATION ACCEPTED. Below you can get your certificate");
         }
+        this.previousStepConfirmed = true;
     }
 
     public void obtainCertificate() throws BadPathException, DigitalSignatureException,
-            IOException {
-        if (!path.isOkayPath(path.getDocPath())){
+            ConnectException, IOException, ProceduralException {
+        isPreviousStepConfirmed();
+        this.crc = justiceMinistry.getCriminalRecordCertf(persData, gl);
+        try {
+            openDocument(new DocPath(this.crc.getActPath()));
+        } catch (Exception e) {
             throw new BadPathException();
-        } else if (digSign == null) {
-            throw new DigitalSignatureException();
-        } else {
-            CriminalRecordCertf crc = justiceMinistry.getCriminalRecordCertf(persData, gl);
-            PDFDocument pdf = new PDFDocument();
-            pdf.openDoc(path);
         }
+        this.previousStepConfirmed = true;
     }
 
-    private void printDocument () throws BadPathException, PrintingException {
+    private void printDocument () throws BadPathException, PrintingException, ProceduralException {}
 
-        if (!path.isOkayPath(path.getDocPath())) {
-            throw new BadPathException();
+    // Intern operations
+
+    private void registerPayment () {}
+
+    private void openDocument (DocPath path) throws BadPathException, IOException {}
+
+    private void printDocument (DocPath path) throws BadPathException, PrintingException, IOException {}
+
+    private void isPreviousStepConfirmed() throws ProceduralException {
+        if (!previousStepConfirmed) {
+            throw new ProceduralException("El paso anterior no se ha completado con éxito.");
         }
-
-        try {
-            printDocument(path);
-            System.out.print("Your Criminal Record Certificate is being printed now");
-        } catch (Exception e) {
-            throw new PrintingException();
-        }
-
+        previousStepConfirmed = false;
     }
 
     // Test methods
@@ -183,24 +202,15 @@ public class UnifiedPlatform {
 
     public String getGoal() { return this.gl.toString(); }
 
-    // Other internal operations (not required)
+    public void setCardPayment (CardPayment cp) { this.cardPayment = cp; }
 
-    private void registerPayment () {
-        boolean payDone = true;
-    }
+    public void setImport(BigDecimal imp) { this.imp = imp; }
 
-    private void openDocument (DocPath path) throws BadPathException, IOException {
-        if (!path.isOkayPath(path.getDocPath())) {
-            throw new BadPathException();
-        } else {
-            PDFDocument pdf = new PDFDocument();
-            pdf.openDoc(path);
-        }
-    }
+    public void setPersData (Citizen persData) { this.persData = persData; }
 
-    private void printDocument (DocPath path) throws BadPathException, PrintingException, IOException {
-        File fileToPrint = new File(path.getDocPath());
-        Desktop.getDesktop().print(fileToPrint);
-    }
+    public void setGoal (Goal goal) { this.gl = goal;}
+
+    public void setPath (DocPath path) { this.path = path; }
+
 }
 

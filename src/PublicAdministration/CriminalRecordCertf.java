@@ -4,7 +4,7 @@ import Data.DigitalSignature;
 import Data.Goal;
 import Data.Nif;
 
-public class CriminalRecordCertf {
+public class CriminalRecordCertf extends PDFDocument {
 
     private Nif nif;
     private String name;
