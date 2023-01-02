@@ -9,7 +9,7 @@ public class DigitalSignature {
     public DigitalSignature (byte[] digSign) {
 
         if (digSign == null) {
-            throw new IllegalArgumentException("No se ha introducido ninguna firma.");
+            throw new NullPointerException("No se ha introducido ninguna firma.");
         }
 
         this.digSign = digSign;

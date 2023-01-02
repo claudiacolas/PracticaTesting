@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class SmallCodeTest {
     @Test
     public void TestingConstructorNull () {
-        Exception exception = assertThrows( IllegalArgumentException.class, () -> {
+        Exception exception = assertThrows( NullPointerException.class, () -> {
             SmallCode smallCode = new SmallCode (null);
         });
 
